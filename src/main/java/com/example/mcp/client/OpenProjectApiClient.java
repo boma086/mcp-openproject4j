@@ -164,7 +164,14 @@ public class OpenProjectApiClient {
             }
             
             JsonNode responseNode = objectMapper.readTree(response.getBody());
-            return WorkPackage.fromJson(responseNode.path("_embedded").path("elements").get(0));
+            JsonNode elementsNode = responseNode.path("_embedded").path("elements");
+            
+            // Check if elements array is empty or missing
+            if (elementsNode.isMissingNode() || !elementsNode.isArray() || elementsNode.size() == 0) {
+                throw OpenProjectApiException.notFound("Work package with ID " + workPackageId);
+            }
+            
+            return WorkPackage.fromJson(elementsNode.get(0));
             
         } catch (HttpClientErrorException e) {
             handleHttpClientError(e);
