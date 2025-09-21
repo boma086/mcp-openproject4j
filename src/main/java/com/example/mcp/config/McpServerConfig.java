@@ -4,7 +4,6 @@ package com.example.mcp.config;
 // import org.springframework.ai.mcp.server.tool.MethodToolCallbackProvider;
 // import org.springframework.ai.mcp.server.tool.ToolCallbackProvider;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
@@ -82,7 +81,7 @@ public class McpServerConfig {
      * 
      * @return Configured RestTemplate instance
      */
-    @Bean
+    // @Bean  // Commented out to avoid conflict with OpenProjectClientConfig.restTemplate()
     public RestTemplate restTemplate() {
         logger.info("Creating configured RestTemplate | 创建配置的RestTemplate");
         

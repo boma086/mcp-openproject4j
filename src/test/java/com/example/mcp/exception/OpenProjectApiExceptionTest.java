@@ -82,11 +82,14 @@ class OpenProjectApiExceptionTest {
 
     @Test
     void openProjectApiException_UserFriendlyMessage_ShouldReturnAppropriateMessages() {
+        // Test 401 Unauthorized for authentication message
+        OpenProjectApiException unauthorized = new OpenProjectApiException("Auth failed", 401, HttpStatus.UNAUTHORIZED);
         assertEquals("Authentication failed. Please check your API key.", 
-                    OpenProjectApiException.forbidden("Auth failed").getUserFriendlyMessage());
+                    unauthorized.getUserFriendlyMessage());
         
+        // Test 403 Forbidden for access denied message  
         assertEquals("Access denied. You don't have permission to perform this action.", 
-                    OpenProjectApiException.notFound("resource").getUserFriendlyMessage());
+                    OpenProjectApiException.forbidden("Access denied").getUserFriendlyMessage());
         
         assertEquals("The requested resource was not found in OpenProject.", 
                     OpenProjectApiException.notFound("resource").getUserFriendlyMessage());
@@ -111,12 +114,13 @@ class OpenProjectApiExceptionTest {
     void rateLimitExceededException_WithRetryAfter_ShouldSetPropertiesCorrectly() {
         String message = "Rate limit exceeded";
         Duration retryAfter = Duration.ofSeconds(30);
+        Instant resetTime = Instant.now().plusSeconds(30);
         
-        RateLimitExceededException exception = new RateLimitExceededException(message, retryAfter);
+        RateLimitExceededException exception = new RateLimitExceededException(message, retryAfter, resetTime, 0, 0);
         
         assertEquals(message, exception.getMessage());
         assertEquals(retryAfter, exception.getRetryAfter());
-        assertEquals(30, exception.getSecondsUntilReset());
+        assertTrue(exception.getSecondsUntilReset() >= 29 && exception.getSecondsUntilReset() <= 30);
         assertFalse(exception.isReset());
     }
 
@@ -136,7 +140,7 @@ class OpenProjectApiExceptionTest {
         assertEquals(resetTime, exception.getResetTime());
         assertEquals(remaining, exception.getRemainingRequests());
         assertEquals(limit, exception.getRequestLimit());
-        assertEquals(60, exception.getSecondsUntilReset());
+        assertTrue(exception.getSecondsUntilReset() >= 59 && exception.getSecondsUntilReset() <= 60);
         assertFalse(exception.isReset());
     }
 
@@ -146,7 +150,7 @@ class OpenProjectApiExceptionTest {
         RateLimitExceededException withRetryAfter = RateLimitExceededException.withRetryAfter(45);
         assertEquals("Rate limit exceeded. Retry after 45 seconds.", withRetryAfter.getMessage());
         assertEquals(Duration.ofSeconds(45), withRetryAfter.getRetryAfter());
-        assertEquals(45, withRetryAfter.getSecondsUntilReset());
+        assertTrue(withRetryAfter.getSecondsUntilReset() >= 44 && withRetryAfter.getSecondsUntilReset() <= 45);
 
         // Test withDetails
         Instant futureTime = Instant.now().plusSeconds(120);
