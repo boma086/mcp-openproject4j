@@ -1,0 +1,274 @@
+# OpenProject MCP Server Configuration
+# OpenProject MCP服务器配置
+
+spring:
+  ai:
+    mcp:
+      server:
+        name: OpenProject MCP Server
+        version: 0.0.1
+        type: ASYNC
+        enabled: true
+        base-url: /api/mcp
+        capabilities:
+          tool: true
+          resource: false
+          logging: true
+
+# OpenProject API Configuration
+# OpenProject API配置
+openproject:
+  base-url: ${OPENPROJECT_BASE_URL:http://localhost:8090}
+  api-key: ${OPENPROJECT_API_KEY:dd1a13cef1bed2797db73f4905a8da1f886f5f4cf3353da13dd44040aaef27a5}
+  timeout: ${OPENPROJECT_TIMEOUT:30000}
+  rate-limit:
+    requests-per-minute: ${OPENPROJECT_RATE_LIMIT:100}
+    burst-capacity: ${OPENPROJECT_BURST_CAPACITY:10}
+    wait-timeout-seconds: ${OPENPROJECT_WAIT_TIMEOUT:30}
+    adaptive-rate-limiting: ${OPENPROJECT_ADAPTIVE_RATE_LIMITING:true}
+    throttling-factor: ${OPENPROJECT_THROTTLING_FACTOR:0.8}
+    window-size-seconds: ${OPENPROJECT_WINDOW_SIZE_SECONDS:60}
+  connection:
+    max-connections: ${OPENPROJECT_MAX_CONNECTIONS:10}
+    connection-timeout: ${OPENPROJECT_CONNECTION_TIMEOUT:5000}
+    read-timeout: ${OPENPROJECT_READ_TIMEOUT:10000}
+  health:
+    timeout: ${OPENPROJECT_HEALTH_TIMEOUT:10000}
+    max-response-time: ${OPENPROJECT_MAX_RESPONSE_TIME:5000}
+    retries: ${OPENPROJECT_HEALTH_RETRIES:2}
+
+# Server Configuration
+# 服务器配置
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /
+  tomcat:
+    max-threads: 20
+    min-spare-threads: 5
+    connection-timeout: 20000
+    max-connections: 100
+
+# Application Configuration
+# 应用程序配置
+  application:
+    name: OpenProject MCP Server
+  
+  # Jackson Configuration for JSON processing
+  # Jackson JSON处理配置
+  jackson:
+    date-format: yyyy-MM-dd
+    time-zone: UTC
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+    default-property-inclusion: non_null
+
+  # HTTP Client Configuration
+  # HTTP客户端配置
+  http:
+    client:
+      connect-timeout: 5s
+      read-timeout: 30s
+
+# Security Configuration
+# 安全配置
+  security:
+    user:
+      name: ${MCP_USERNAME:admin}
+      password: ${MCP_PASSWORD:password}
+      roles: MCP_CLIENT
+    
+    # CORS Configuration
+    # CORS配置
+    cors:
+      allowed-origins: ${CORS_ALLOWED_ORIGINS:*}
+      allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
+      allowed-headers: ${CORS_ALLOWED_HEADERS:*}
+      allow-credentials: true
+      max-age: 3600
+    
+    # CSRF Configuration
+    # CSRF配置
+    csrf:
+      enabled: true
+      ignored-patterns: /api/mcp/**, /actuator/**, /health/**
+    
+    # Session Configuration
+    # 会话配置
+    session:
+      timeout: 3600 # 1 hour in seconds
+      tracking-modes: cookie
+    
+    # Headers Configuration
+    # 头配置
+    headers:
+      cache: true
+      content-type: true
+      frame: sameorigin
+      xss: true
+      strict-transport-security: max-age=31536000; includeSubDomains; preload
+      content-security-policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'
+      referrer-policy: strict-origin-when-cross-origin
+    
+    # Authentication Configuration
+    # 认证配置
+    filter:
+      order: 10
+    
+    # Authorization Configuration
+    # 授权配置
+    authorize:
+      public-patterns: /health/**, /actuator/health, /actuator/info, /actuator/metrics
+      admin-patterns: /actuator/**
+      protected-patterns: /api/mcp/**
+
+# Cache Configuration
+# 缓存配置
+  cache:
+    type: simple
+    cache-names: 
+      - projectReports
+      - apiResponses
+      - openProjectData
+      - weeklyReports
+      - riskAnalyses
+      - completionAnalyses
+      - workPackages
+    cache-ttl: 3600000 # 1 hour in milliseconds
+
+# Report Cache Service Configuration
+# 报告缓存服务配置
+cache:
+  # Cache TTL configurations for different report types
+  # 不同报告类型的缓存TTL配置
+  weekly-report-ttl: ${WEEKLY_REPORT_TTL:1800000} # 30 minutes in milliseconds
+  risk-analysis-ttl: ${RISK_ANALYSIS_TTL:900000} # 15 minutes in milliseconds
+  completion-analysis-ttl: ${COMPLETION_ANALYSIS_TTL:600000} # 10 minutes in milliseconds
+  work-package-ttl: ${WORK_PACKAGE_TTL:300000} # 5 minutes in milliseconds
+  
+  # Cache monitoring and statistics
+  # 缓存监控和统计
+  monitoring:
+    enabled: ${CACHE_MONITORING_ENABLED:true}
+    statistics-interval: ${CACHE_STATISTICS_INTERVAL:60000} # 1 minute in milliseconds
+    health-check-interval: ${CACHE_HEALTH_CHECK_INTERVAL:300000} # 5 minutes in milliseconds
+    
+  # Cache management
+  # 缓存管理
+  management:
+    auto-eviction: ${CACHE_AUTO_EVICTION:true}
+    stale-entry-threshold: ${CACHE_STALE_ENTRY_THRESHOLD:1440} # 24 hours in minutes
+    max-cache-size: ${CACHE_MAX_SIZE:1000} # Maximum entries per cache
+
+# Management Endpoints Configuration
+# 管理端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+    info:
+      git:
+        enabled: true
+      env:
+        enabled: true
+  metrics:
+    export:
+      simple:
+        enabled: true
+      prometheus:
+        enabled: true
+    tags:
+      application: openproject-mcp-server
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+  health:
+    circuitbreakers:
+      enabled: true
+  info:
+    env:
+      enabled: true
+
+# Logging Configuration
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.example.mcp: DEBUG
+    org.springframework.ai.mcp: INFO
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.apache.http: WARN
+    org.springframework.cache: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 7
+      total-size-cap: 1GB
+      file-name-pattern: "logs/openproject-mcp-%d{yyyy-MM-dd}.%i.log"
+
+# Actuator Configuration
+# 执行器配置
+  boot:
+    admin:
+      client:
+        url: ${SPRING_BOOT_ADMIN_URL:http://localhost:8081}
+
+# Resilience4j Circuit Breaker Configuration
+# Resilience4j熔断器配置
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 5
+    instances:
+      openProjectApi:
+        baseConfig: default
+  retry:
+    configs:
+      default:
+        maxAttempts: 3
+        waitDuration: 1s
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+    instances:
+      openProjectApi:
+        baseConfig: default
+
+# Task Execution Configuration
+# 任务执行配置
+  task:
+    execution:
+      pool:
+        core-size: 5
+        max-size: 10
+        queue-capacity: 25
+    scheduling:
+      pool:
+        size: 3
+
+# Internationalization Configuration
+# 国际化配置
+  messages:
+    basename: messages/messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
+
+# Validation Configuration
+# 验证配置
+  validation:
+    fail-fast: true

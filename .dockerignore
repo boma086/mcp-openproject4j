@@ -1,0 +1,180 @@
+# Docker ignore file for OpenProject MCP Server
+# OpenProject MCP服务器的Docker忽略文件
+
+# Maven target directory
+# Maven目标目录
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDE files
+# IDE文件
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# OS generated files
+# 操作系统生成的文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Log files
+# 日志文件
+*.log
+logs/
+
+# Data files
+# 数据文件
+data/
+*.db
+*.sqlite
+
+# Environment files
+# 环境文件
+.env
+.env.local
+.env.production
+
+# Documentation build
+# 文档构建
+docs/build/
+node_modules/
+
+# Temporary files
+# 临时文件
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Test coverage reports
+# 测试覆盖率报告
+coverage/
+.nyc_output/
+
+# Dependency directories
+# 依赖目录
+node_modules/
+
+# Optional npm cache directory
+# 可选的npm缓存目录
+.npm
+
+# Optional eslint cache
+# 可选的eslint缓存
+.eslintcache
+
+# Microbundle cache
+# Microbundle缓存
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+# 可选的REPL历史
+.node_repl_history
+
+# Output of 'npm pack'
+# 'npm pack'的输出
+*.tgz
+
+# Yarn Integrity file
+# Yarn完整性文件
+.yarn-integrity
+
+# dotenv environment variables file
+# dotenv环境变量文件
+.env
+.env.test
+.env.production
+
+# parcel-bundler cache
+# parcel-bundler缓存
+.cache
+.parcel-cache
+
+# Next.js build output
+# Next.js构建输出
+.next
+out
+
+# Nuxt.js build / generate output
+# Nuxt.js构建/生成输出
+.nuxt
+dist
+
+# Gatsby files
+# Gatsby文件
+.cache/
+public
+
+# Storybook build outputs
+# Storybook构建输出
+.out
+.storybook-out
+
+# Temporary folders
+# 临时文件夹
+tmp/
+temp/
+
+# Editor directories and files
+# 编辑器目录和文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+# 操作系统生成的文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Docker specific
+# Docker特定文件
+Dockerfile.prod
+Dockerfile.staging
+
+# Monitoring and metrics
+# 监控和指标
+metrics/
+*.metrics
+
+# Backup files
+# 备份文件
+*.bak
+*.backup
+
+# Archive files
+# 归档文件
+*.zip
+*.tar.gz
+*.rar
+
+# Configuration files that should not be in the image
+# 不应在镜像中的配置文件
+application-dev.yml
+application-test.yml
+application-prod.yml
+
+# Secret files
+# 密钥文件
+secrets/
+*.key
+*.pem
+*.crt
+*.p12
+*.jks

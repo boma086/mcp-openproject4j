@@ -1,0 +1,57 @@
+# Prometheus configuration for OpenProject MCP Server
+# OpenProject MCP服务器的Prometheus配置
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# Alertmanager configuration
+# Alertmanager配置
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+# Load rules once and periodically evaluate them
+# 加载规则并定期评估
+rule_files:
+  - "alert_rules.yml"
+  - "recording_rules.yml"
+
+# Scrape configuration
+# 抓取配置
+scrape_configs:
+  # OpenProject MCP Server
+  # OpenProject MCP服务器
+  - job_name: 'openproject-mcp-server'
+    static_configs:
+      - targets: ['openproject-mcp-server:8080']
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    scheme: 'http'
+
+  # Prometheus itself
+  # Prometheus自身
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Node Exporter (if used)
+  # Node Exporter（如果使用）
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+
+  # Redis Exporter (if used)
+  # Redis Exporter（如果使用）
+  - job_name: 'redis-exporter'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+
+  # Nginx Exporter (if used)
+  # Nginx Exporter（如果使用）
+  - job_name: 'nginx-exporter'
+    static_configs:
+      - targets: ['nginx-exporter:9113']

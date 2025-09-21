@@ -1,0 +1,856 @@
+/* ProjectDashboard.css - Styling for OpenProject MCP Dashboard
+   项目仪表板样式文件 - OpenProject MCP 仪表板样式
+   
+   This CSS file provides comprehensive styling for the React dashboard component
+   with responsive design, animations, accessibility features, and maintainable code structure.
+   
+   此CSS文件为React仪表板组件提供全面的样式，包括响应式设计、动画、
+   可访问性功能和可维护的代码结构。
+*/
+
+/* CSS Custom Properties (CSS Variables) for consistent theming
+   CSS自定义属性（变量）用于一致的主题设置
+*/
+:root {
+  /* Color Palette | 调色板 */
+  --primary-color: #3498db;
+  --secondary-color: #2ecc71;
+  --danger-color: #e74c3c;
+  --warning-color: #f39c12;
+  --dark-color: #2c3e50;
+  --light-color: #ecf0f1;
+  --white-color: #ffffff;
+  
+  /* Status Colors | 状态颜色 */
+  --success-color: #27ae60;
+  --info-color: #3498db;
+  --error-color: #e74c3c;
+  --pending-color: #f39c12;
+  
+  /* Text Colors | 文本颜色 */
+  --text-primary: #2c3e50;
+  --text-secondary: #7f8c8d;
+  --text-light: #bdc3c7;
+  --text-white: #ffffff;
+  
+  /* Background Colors | 背景颜色 */
+  --bg-primary: #f8f9fa;
+  --bg-secondary: #ffffff;
+  --bg-dark: #34495e;
+  --bg-error: #ffebee;
+  --bg-success: #e8f5e8;
+  --bg-warning: #fff3e0;
+  
+  /* Border Colors | 边框颜色 */
+  --border-light: #dee2e6;
+  --border-medium: #ced4da;
+  --border-dark: #adb5bd;
+  --border-error: #f5c6cb;
+  --border-success: #c3e6cb;
+  
+  /* Spacing | 间距 */
+  --spacing-xs: 0.25rem;    /* 4px */
+  --spacing-sm: 0.5rem;     /* 8px */
+  --spacing-md: 1rem;       /* 16px */
+  --spacing-lg: 1.5rem;     /* 24px */
+  --spacing-xl: 2rem;       /* 32px */
+  --spacing-2xl: 3rem;      /* 48px */
+  
+  /* Border Radius | 边框圆角 */
+  --radius-sm: 0.25rem;     /* 4px */
+  --radius-md: 0.5rem;      /* 8px */
+  --radius-lg: 0.75rem;     /* 12px */
+  --radius-xl: 1rem;        /* 16px */
+  
+  /* Box Shadow | 盒子阴影 */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 8px 16px rgba(0, 0, 0, 0.1);
+  
+  /* Typography | 字体排版 */
+  --font-family-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  --font-size-xs: 0.75rem;   /* 12px */
+  --font-size-sm: 0.875rem;  /* 14px */
+  --font-size-base: 1rem;    /* 16px */
+  --font-size-lg: 1.125rem;  /* 18px */
+  --font-size-xl: 1.25rem;   /* 20px */
+  --font-size-2xl: 1.5rem;   /* 24px */
+  --font-size-3xl: 2rem;     /* 32px */
+  
+  /* Line Height | 行高 */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  /* Transitions | 过渡效果 */
+  --transition-fast: 0.15s ease-in-out;
+  --transition-normal: 0.3s ease-in-out;
+  --transition-slow: 0.5s ease-in-out;
+  
+  /* Z-index Layers | Z-index层级 */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal: 1040;
+  --z-popover: 1050;
+  --z-tooltip: 1060;
+}
+
+/* Dark Mode Support | 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --border-light: #404040;
+    --border-medium: #505050;
+  }
+}
+
+/* Base Reset and Global Styles | 基础重置和全局样式 */
+.project-dashboard * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.project-dashboard {
+  font-family: var(--font-family-primary);
+  line-height: var(--line-height-normal);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+  animation: fadeIn var(--transition-slow) ease-in;
+}
+
+/* Main Container | 主容器 */
+.project-dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+  animation: slideUp var(--transition-normal) ease-out;
+}
+
+/* Header Section | 标题部分 */
+.project-dashboard-header {
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+  padding: var(--spacing-xl);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.project-dashboard-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--danger-color));
+  animation: gradientShift 3s ease-in-out infinite;
+}
+
+.project-dashboard-title {
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.project-dashboard-subtitle {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: var(--font-size-base);
+  font-weight: 400;
+}
+
+/* Connection Status Indicator | 连接状态指示器 */
+.connection-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.connection-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.connection-status.connected {
+  color: var(--success-color);
+}
+
+.connection-status.connected .connection-status-dot {
+  background-color: var(--success-color);
+}
+
+.connection-status.disconnected {
+  color: var(--error-color);
+}
+
+.connection-status.disconnected .connection-status-dot {
+  background-color: var(--error-color);
+  animation: none;
+}
+
+.connection-status.error {
+  color: var(--warning-color);
+}
+
+.connection-status.error .connection-status-dot {
+  background-color: var(--warning-color);
+}
+
+.connection-status.connecting {
+  color: var(--info-color);
+}
+
+.connection-status.connecting .connection-status-dot {
+  background-color: var(--info-color);
+}
+
+/* Control Panel Section | 控制面板部分 */
+.control-panel {
+  background-color: var(--bg-secondary);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Form Groups | 表单组 */
+.form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-input {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-primary);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.form-input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+/* Button Grid | 按钮网格 */
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Base Button Styles | 基础按钮样式 */
+.btn {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  min-height: 48px;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left var(--transition-normal);
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none !important;
+}
+
+/* Button Variants | 按钮变体 */
+.btn-primary {
+  background-color: var(--primary-color);
+  color: var(--text-white);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-danger {
+  background-color: var(--danger-color);
+  color: var(--text-white);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  color: var(--text-white);
+}
+
+.btn-success:hover:not(:disabled) {
+  background-color: #229954;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-warning {
+  background-color: var(--warning-color);
+  color: var(--text-white);
+}
+
+.btn-warning:hover:not(:disabled) {
+  background-color: #e67e22;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Button Actions Container | 按钮操作容器 */
+.button-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+/* Alert/Message Styles | 警报/消息样式 */
+.alert {
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-lg);
+  font-weight: 500;
+  border: 1px solid;
+  animation: slideDown var(--transition-normal) ease-out;
+}
+
+.alert-error {
+  background-color: var(--bg-error);
+  color: var(--error-color);
+  border-color: var(--border-error);
+}
+
+.alert-success {
+  background-color: var(--bg-success);
+  color: var(--success-color);
+  border-color: var(--border-success);
+}
+
+.alert-warning {
+  background-color: var(--bg-warning);
+  color: var(--warning-color);
+  border-color: #ffe0b2;
+}
+
+.alert-title {
+  font-weight: 700;
+  margin-bottom: var(--spacing-xs);
+}
+
+/* Report Results Section | 报告结果部分 */
+.report-results {
+  background-color: var(--bg-secondary);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--spacing-lg);
+  border: 1px solid var(--border-light);
+  animation: fadeIn var(--transition-normal) ease-in;
+}
+
+.report-results-header {
+  color: var(--text-primary);
+  margin-top: 0;
+  margin-bottom: var(--spacing-lg);
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  padding-bottom: var(--spacing-md);
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.report-content {
+  background-color: var(--bg-primary);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-height: 500px;
+  overflow-y: auto;
+  position: relative;
+}
+
+.report-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+}
+
+/* Loading States | 加载状态 */
+.loading-container {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  animation: pulse var(--transition-slow) ease-in-out infinite;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--light-color);
+  border-top: 4px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--spacing-md);
+}
+
+.loading-text {
+  color: var(--text-primary);
+  margin: var(--spacing-md) 0 0 0;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+}
+
+.loading-subtext {
+  color: var(--text-secondary);
+  margin: var(--spacing-sm) 0 0 0;
+  font-size: var(--font-size-sm);
+}
+
+/* Button Loading State | 按钮加载状态 */
+.btn-loading {
+  position: relative;
+  color: transparent !important;
+}
+
+.btn-loading::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 50%;
+  margin-left: -8px;
+  margin-top: -8px;
+  border: 2px solid var(--text-white);
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
+}
+
+/* Animations | 动画 */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes gradientShift {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-10px); }
+}
+
+/* Responsive Design | 响应式设计 */
+@media (max-width: 768px) {
+  .project-dashboard-container {
+    padding: var(--spacing-lg);
+  }
+  
+  .project-dashboard-header {
+    padding: var(--spacing-lg);
+  }
+  
+  .project-dashboard-title {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .control-panel {
+    padding: var(--spacing-lg);
+  }
+  
+  .button-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+  
+  .button-actions {
+    flex-direction: column;
+  }
+  
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .project-dashboard-container {
+    padding: var(--spacing-md);
+  }
+  
+  .project-dashboard-header {
+    padding: var(--spacing-md);
+  }
+  
+  .project-dashboard-title {
+    font-size: var(--font-size-xl);
+  }
+  
+  .form-input {
+    padding: var(--spacing-sm);
+  }
+  
+  .btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    min-height: 44px;
+  }
+}
+
+/* High Contrast Mode Support | 高对比度模式支持 */
+@media (prefers-contrast: high) {
+  .project-dashboard {
+    background-color: white;
+    color: black;
+  }
+  
+  .project-dashboard-header,
+  .control-panel,
+  .report-results {
+    background-color: white;
+    border: 2px solid black;
+  }
+  
+  .btn {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Reduced Motion Support | 减少动画支持 */
+@media (prefers-reduced-motion: reduce) {
+  .project-dashboard,
+  .project-dashboard-header,
+  .btn,
+  .alert,
+  .report-results,
+  .loading-container {
+    animation: none;
+    transition: none;
+  }
+  
+  .btn:hover {
+    transform: none;
+  }
+  
+  .connection-status-dot {
+    animation: none;
+  }
+}
+
+/* Focus Styles for Accessibility | 可访问性的焦点样式 */
+.btn:focus,
+.form-input:focus {
+  outline: 3px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.btn:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Skip to Main Content Link for Screen Readers | 屏幕阅读器的跳转到主要内容链接 */
+.skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--primary-color);
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 0 0 4px 0;
+  z-index: var(--z-tooltip);
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
+
+/* Print Styles | 打印样式 */
+@media print {
+  .project-dashboard {
+    background: white;
+    color: black;
+  }
+  
+  .btn,
+  .button-actions,
+  .loading-container,
+  .connection-status {
+    display: none;
+  }
+  
+  .project-dashboard-header,
+  .control-panel,
+  .report-results {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    break-inside: avoid;
+  }
+  
+  .report-content {
+    max-height: none;
+    overflow: visible;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+}
+
+/* Custom Scrollbar | 自定义滚动条 */
+.report-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.report-content::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+  border-radius: var(--radius-sm);
+}
+
+.report-content::-webkit-scrollbar-thumb {
+  background: var(--border-medium);
+  border-radius: var(--radius-sm);
+}
+
+.report-content::-webkit-scrollbar-thumb:hover {
+  background: var(--border-dark);
+}
+
+/* Utility Classes | 工具类 */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.mt-0 { margin-top: 0; }
+.mb-0 { margin-bottom: 0; }
+.ml-0 { margin-left: 0; }
+.mr-0 { margin-right: 0; }
+
+.mt-sm { margin-top: var(--spacing-sm); }
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.ml-sm { margin-left: var(--spacing-sm); }
+.mr-sm { margin-right: var(--spacing-sm); }
+
+.mt-md { margin-top: var(--spacing-md); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.ml-md { margin-left: var(--spacing-md); }
+.mr-md { margin-right: var(--spacing-md); }
+
+.hidden { display: none !important; }
+.visible { display: block !important; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Component-specific Styles | 组件特定样式 */
+
+/* Status Badge Component | 状态徽章组件 */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+.status-badge.success {
+  background-color: rgba(39, 174, 96, 0.1);
+  color: var(--success-color);
+}
+
+.status-badge.error {
+  background-color: rgba(231, 76, 60, 0.1);
+  color: var(--error-color);
+}
+
+.status-badge.warning {
+  background-color: rgba(243, 156, 18, 0.1);
+  color: var(--warning-color);
+}
+
+.status-badge.info {
+  background-color: rgba(52, 152, 219, 0.1);
+  color: var(--info-color);
+}
+
+/* Tooltips | 工具提示 */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]:hover::before,
+[data-tooltip]:focus::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 12px;
+  background-color: var(--dark-color);
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  border-radius: 4px;
+  z-index: var(--z-tooltip);
+  margin-bottom: 6px;
+}
+
+[data-tooltip]:hover::after,
+[data-tooltip]:focus::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--dark-color);
+  z-index: var(--z-tooltip);
+}
+
+/* Performance optimization: Hardware acceleration | 性能优化：硬件加速 */
+.btn,
+.project-dashboard-header,
+.control-panel,
+.report-results,
+.loading-container {
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}

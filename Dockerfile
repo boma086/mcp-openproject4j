@@ -1,0 +1,79 @@
+# OpenProject MCP Server Dockerfile
+# OpenProject MCP服务器Dockerfile
+
+# Build stage
+# 构建阶段
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
+
+# Set working directory
+# 设置工作目录
+WORKDIR /app
+
+# Copy pom.xml and download dependencies
+# 复制pom.xml并下载依赖
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy source code
+# 复制源代码
+COPY src ./src
+
+# Build the application
+# 构建应用程序
+RUN mvn clean package -DskipTests -B
+
+# Production stage
+# 生产阶段
+FROM eclipse-temurin:21-jre-alpine
+
+# Install required packages
+# 安装必需的软件包
+RUN apk add --no-cache curl
+
+# Create non-root user
+# 创建非root用户
+RUN addgroup -g 1001 -S spring && \
+    adduser -S springuser -u 1001
+
+# Set working directory
+# 设置工作目录
+WORKDIR /app
+
+# Copy JAR file from builder
+# 从构建阶段复制JAR文件
+COPY --from=builder /app/target/*.jar app.jar
+
+# Create directories for logs and data
+# 创建日志和数据目录
+RUN mkdir -p /app/logs /app/data && \
+    chown -R springuser:spring /app
+
+# Switch to non-root user
+# 切换到非root用户
+USER springuser
+
+# Health check
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+# Expose port
+# 暴露端口
+EXPOSE 8080
+
+# Environment variables
+# 环境变量
+ENV JAVA_OPTS="-Xmx512m -Xms256m"
+ENV SERVER_PORT=8080
+ENV SPRING_PROFILES_ACTIVE=prod
+
+# Run the application
+# 运行应用程序
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+
+# Labels
+# 标签
+LABEL org.opencontainers.image.title="OpenProject MCP Server"
+LABEL org.opencontainers.image.description="AI-powered OpenProject integration server using Model Context Protocol"
+LABEL org.opencontainers.image.version="0.0.1-SNAPSHOT"
+LABEL org.opencontainers.image.vendor="Example Organization"
