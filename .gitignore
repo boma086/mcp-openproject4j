@@ -505,3 +505,7 @@ temp/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+claudedocs
+deployment
+monitoring
